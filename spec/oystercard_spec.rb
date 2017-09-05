@@ -27,4 +27,26 @@ describe Oystercard do
       end
   end
 
+  describe '# in_journey?' do
+    it { is_expected.to respond_to(:in_journey?)}
+
+    it ' is expected to return false at start' do
+      expect(oystercard.in_journey?).to eq false
+    end
+  end
+
+  describe '# touch_in' do
+    it 'should make in_journey equal true' do
+      oystercard.touch_in
+      expect(oystercard.in_journey?).to eq true
+    end
+  end
+
+  describe '# touch_out' do
+    it 'should make in_journey equal false' do
+      oystercard.touch_in
+      oystercard.touch_out
+      expect(oystercard.in_journey?).to eq false
+    end
+  end
 end
