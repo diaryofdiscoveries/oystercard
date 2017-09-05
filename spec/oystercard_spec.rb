@@ -1,7 +1,7 @@
 require 'oystercard'
 describe Oystercard do
   subject(:oystercard) { described_class.new }
-
+  let(:station) {double :entry_station}
   it 'has a balance of zero' do
     expect(oystercard.balance).to eq(0)
   end
@@ -31,19 +31,25 @@ describe Oystercard do
   describe '# touch_in' do
     it 'should make in_journey equal true if funds are greater than minimum' do
       oystercard.top_up(Oystercard::MINIMUM)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       expect(oystercard.in_journey?).to eq true
     end
 
+    it 'should record the entry station' do
+      oystercard.top_up(Oystercard::MINIMUM)
+      oystercard.touch_in(station)
+      expect(oystercard.entry_station).to eq station
+    end
+
     it 'should raise an error if not at minimum balance' do
-      expect { oystercard.touch_in }.to raise_error 'Insufficient funds to travel'
+      expect { oystercard.touch_in(station) }.to raise_error 'Insufficient funds to travel'
     end
   end
 
   describe '# touch_out' do
     it 'should make in_journey equal false' do
       oystercard.top_up(Oystercard::MINIMUM)
-      oystercard.touch_in
+      oystercard.touch_in(station)
       oystercard.touch_out
       expect(oystercard.in_journey?).to eq false
     end
@@ -51,6 +57,13 @@ describe Oystercard do
     it 'should deduct the minimum fare' do
         oystercard.top_up(Oystercard::MINIMUM)
         expect{ oystercard.touch_out }.to change{ oystercard.balance }.by(-Oystercard::MINIMUM)
+    end
+
+    it 'Should change entry station to nil' do
+      oystercard.top_up(Oystercard::MINIMUM)
+      oystercard.touch_in(station)
+      oystercard.touch_out
+      expect(oystercard.entry_station).to eq nil
     end
 
   end
