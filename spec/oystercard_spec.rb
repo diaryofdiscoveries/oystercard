@@ -4,7 +4,7 @@ describe Oystercard do
   let(:entry_station) {double :entry_station}
   let(:exit_station) {double :exit_station}
 
-  it 'has a balance of zero' do
+ it 'has a balance of zero' do
     expect(oystercard.balance).to eq(0)
   end
 
@@ -21,9 +21,10 @@ describe Oystercard do
        expect { oystercard.top_up 1 }.to raise_error 'Oystercard maximum balance of £90 exceeded'
     end
   end
+end
 
 
-  describe '# in_journey?' do
+=begin  describe '# in_journey?' do
     it { is_expected.to respond_to(:in_journey?)}
 
     it ' is expected to return false at start' do
@@ -91,4 +92,4 @@ describe Oystercard do
     expect(oystercard.history).to eq [{ entry_station: entry_station, exit_station: exit_station }]
 
   end
-end
+=end
