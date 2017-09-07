@@ -2,46 +2,30 @@ require_relative 'station'
 require_relative 'oystercard'
 
 class Journey
-attr_reader :balance, :entry_station, :exit_station, :history
+attr_reader :balance, :entry_station, :exit_station
 
 MINIMUM = 1
+PENALTY = 6
 
-  def initialize
-    @history = []
-  end
-
-  def in_journey?
-    !!entry_station
-  end
-
-  def touch_in(entry_station)
-    self.touch_out(nil) if in_journey? == true
-    fail 'Insufficient funds to travel' if balance < MINIMUM
+  def initialize(entry_station: nil, exit_station: nil)
     @entry_station = entry_station
-  end
-
-  def touch_out(exit_station)
-    deduct(MINIMUM)
     @exit_station = exit_station
-    current_journey = { entry_station: entry_station, exit_station: exit_station }
-    current_journey.fare
-    @history << current_journey
-    @entry_station = nil
   end
 
-  def fare(current_journey)
-    if :entry_station == nil
-      return deduct(PENALTY)
-    elsif :exit_station == nil
-      return deduct(PENALTY)
+  def finish(exit_station)
+    @exit_station = exit_station
+  end
+
+  def completed_journey?
+    !!entry_station && !!exit_station
+  end
+
+  def fare
+    if completed_journey?
+      MINIMUM
     else
-      deduct(MINIMUM)
+      PENALTY
     end
-  end
-
-  def top_up(amount)
-    fail 'Oystercard maximum balance of £90 exceeded' if balance + amount > CARD_LIMIT
-    @balance += amount
   end
 
 end
